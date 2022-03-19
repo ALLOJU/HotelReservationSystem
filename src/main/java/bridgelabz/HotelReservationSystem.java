@@ -4,8 +4,9 @@ import java.util.ArrayList;
 
 public class HotelReservationSystem {
 
-	
-
+	/**
+	 * Creating arraylist of hotel
+	 */
 	public ArrayList<Hotel> arrayList;
 
 	/*
