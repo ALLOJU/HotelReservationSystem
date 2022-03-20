@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 
 
@@ -69,10 +70,10 @@ public class HotelReservationSystem {
 			int rating = sc.nextInt();
 			System.out.println("Enter Week Day rate for Regular Customer");
 			int regularWeekDayRate = sc.nextInt();
-			
+
 			System.out.println("Enter Week End rate for Regular Customer");
 			int regularWeekEndRate = sc.nextInt();
-		
+
 			Hotel hotel=new Hotel(HotelName,rating,regularWeekEndRate,regularWeekEndRate);
 			hotel.setHotelName(HotelName);
 			hotel.setRating(rating);
@@ -104,8 +105,8 @@ public class HotelReservationSystem {
 	 * day of week is use to calculate the day at that particular date.
 	 */
 	public void weekEndData(LocalDate startDate, LocalDate lastDate) {
-		
-		
+
+
 		List<LocalDate> dateList = startDate.datesUntil(lastDate).collect(Collectors.toList());
 		dateList.add(lastDate);
 		for (LocalDate localDate : dateList) {
@@ -120,7 +121,7 @@ public class HotelReservationSystem {
 				}
 			}
 		}
-		
+
 		result1 = hotelList.get(0);
 		for (Hotel hotel : hotelList) {
 			if (result1.totalRegularRate > hotel.totalRegularRate) {
@@ -143,10 +144,37 @@ public class HotelReservationSystem {
 		System.out.println("Minimum Rate Hotels");
 		minRateInRegular.forEach((key, value) -> System.out.println("Hotel Name: " + key + "\nTotal Rate: " + value));
 	}
-	
 
-	
 
-	
+	public static String getCheapestBestRatedHotel(String startDate, String endDate) {
+		DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd-MMM-yyyy");
+		LocalDate startDateInput = LocalDate.parse(startDate, dateFormat);
+		LocalDate endDateInput = LocalDate.parse(endDate, dateFormat);
+		int noOfDaysToBook = (int) ChronoUnit.DAYS.between(startDateInput, endDateInput) + 1;
+		List<DayOfWeek> daysList = new ArrayList<>();
+		daysList = Stream.iterate(startDateInput.getDayOfWeek(), day -> day.plus(1)).limit(noOfDaysToBook).collect(Collectors.toList());
+		int noOfWeekends = (int) daysList.stream().filter(day -> 
+		day.equals(DayOfWeek.SATURDAY) || day.equals(DayOfWeek.SUNDAY)).count();
+		int noOfWeekdays = daysList.size() - noOfWeekends;
+		int minCost = hotelList.get(0).getRegularWeekDayRate() * noOfWeekdays + hotelList.get(0).getRegularWeekDayRate() * noOfWeekends ;
+		List<Hotel> cheapestHotelList = new ArrayList<>();
+		cheapestHotelList.add(hotelList.get(0));
+		for(int i = 1; i < hotelList.size(); i++) {
+			if(hotelList.get(i).getRegularWeekDayRate() * noOfWeekdays + hotelList.get(i).getRegularWeekEndRate() * noOfWeekends < minCost) {
+				minCost = hotelList.get(i).getRegularWeekDayRate() * noOfWeekdays + hotelList.get(i).getRegularWeekEndRate() * noOfWeekends;
+				for(int j = 0; j < cheapestHotelList.size(); j++) 
+					cheapestHotelList.remove(j);
+				cheapestHotelList.add(hotelList.get(i));
+			}
+			if(hotelList.get(i).getRegularWeekDayRate() * noOfWeekdays + hotelList.get(i).getRegularWeekEndRate() * noOfWeekends == minCost)
+				cheapestHotelList.add(hotelList.get(i));
+		}
+		Hotel cheapestBestRatedHotel = cheapestHotelList.stream().max((hotelOne, hotelTwo) -> hotelOne.getRating() -hotelTwo.getRating()).orElse(null);
+		String cheapestBestRatedHotelInfo = cheapestBestRatedHotel.getHotelName() + ", Rating: " + cheapestBestRatedHotel.getRating() + ", Total Cost: $" + minCost;
+		System.out.println("Cheapest Best Rated Hotel :- " + cheapestBestRatedHotelInfo);
+		return cheapestBestRatedHotelInfo;
+	}
+
+
 
 }

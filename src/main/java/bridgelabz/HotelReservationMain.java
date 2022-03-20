@@ -27,7 +27,8 @@ public class HotelReservationMain {
 		do {
 			System.out.println("Please Enter 1 to add Hotels");
 			System.out.println("Please Enter 2 to find cheapest hotel for date input range");
-			System.out.println("Please Enter 3 to find cheapes hotel for regular customer");
+			System.out.println("Please Enter 3 to find cheapest hotel for regular customer");
+			System.out.println("Please Enter 4 to find cheapes best rated hotel for regular customer");
 
 
 			System.out.println("Choose option to perform action");
@@ -68,6 +69,15 @@ public class HotelReservationMain {
 				LocalDate startDateForRegular = LocalDate.of(2020, Month.SEPTEMBER, 11);
 				LocalDate lastDateForRegular = LocalDate.of(2020, Month.SEPTEMBER, 12);
 				hotelReservationSystem.findCheapestRegularHotels(startDateForRegular, lastDateForRegular);
+				break;
+			
+			case 4:
+				
+				System.out.println("Enter the start date (DD-MMM-YYYY)");
+				String sd = sc.next();
+				System.out.println("Enter the end date (DD-MMM-YYYY)");
+				String ed = sc.next();
+				HotelReservationSystem.getCheapestBestRatedHotel(sd, ed);
 				break;
 			}
 		}while(num!=0);
