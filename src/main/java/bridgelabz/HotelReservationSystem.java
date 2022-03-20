@@ -91,8 +91,15 @@ public class HotelReservationSystem {
 	 * @param ed - Ending input date
 	 */
 	public  Hotel findCheapestHotel(LocalDate  startDate, LocalDate  endDate) {
+		//calculated days between start and end date
 		long daysBetween = ChronoUnit.DAYS.between(startDate, endDate);
 		int cheapRate;
+		/**
+		 * here im calculated cheapest hotel by using Comparator class 
+		 * using min method of collections class founded minimum value of regular week day rate
+		 * then multiplied days between start and end date with regular weekday rate to find the rate of the
+		 * cheapest hotel
+		 */
 		Hotel cheapest = Collections.min(hotelList, Comparator.comparing(hotel -> hotel.getRegularWeekDayRate()));
 		cheapRate = (int) ((daysBetween + 1) * cheapest.getRegularWeekDayRate());
 		System.out.println("Cheapest Hotel Name: " + cheapest.getHotelName() + "\nTotal Rate: " + cheapRate);
@@ -104,15 +111,20 @@ public class HotelReservationSystem {
 	 * the date list using advance for loop. 
 	 * day of week is use to calculate the day at that particular date.
 	 */
+	//UC4
 	public void weekEndData(LocalDate startDate, LocalDate lastDate) {
 
-
+		/**
+		 * Added start date to last dates to the datesList
+		 */
 		List<LocalDate> dateList = startDate.datesUntil(lastDate).collect(Collectors.toList());
 		dateList.add(lastDate);
 		for (LocalDate localDate : dateList) {
+			//calculated days of the week
 			DayOfWeek dayOfWeek2 = DayOfWeek.from(localDate);
 			if (dayOfWeek2.equals(DayOfWeek.SATURDAY) || dayOfWeek2.equals(DayOfWeek.SUNDAY)) {
 				for (Hotel hotel : hotelList) {
+					//here calculated rate for week ends
 					hotel.totalRegularRate += hotel.getRegularWeekEndRate();
 				}
 			} else {
@@ -146,10 +158,11 @@ public class HotelReservationSystem {
 	}
 
 
-	public static String getCheapestBestRatedHotel(String startDate, String endDate) {
-		DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd-MMM-yyyy");
+	public  Hotel getCheapestBestRatedHotel(String startDate, String endDate) {
+		DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("ddMMMyyyy");
 		LocalDate startDateInput = LocalDate.parse(startDate, dateFormat);
 		LocalDate endDateInput = LocalDate.parse(endDate, dateFormat);
+		//calculated no of days between start date and end date
 		int noOfDaysToBook = (int) ChronoUnit.DAYS.between(startDateInput, endDateInput) + 1;
 		List<DayOfWeek> daysList = new ArrayList<>();
 		daysList = Stream.iterate(startDateInput.getDayOfWeek(), day -> day.plus(1)).limit(noOfDaysToBook).collect(Collectors.toList());
@@ -172,7 +185,7 @@ public class HotelReservationSystem {
 		Hotel cheapestBestRatedHotel = cheapestHotelList.stream().max((hotelOne, hotelTwo) -> hotelOne.getRating() -hotelTwo.getRating()).orElse(null);
 		String cheapestBestRatedHotelInfo = cheapestBestRatedHotel.getHotelName() + ", Rating: " + cheapestBestRatedHotel.getRating() + ", Total Cost: $" + minCost;
 		System.out.println("Cheapest Best Rated Hotel :- " + cheapestBestRatedHotelInfo);
-		return cheapestBestRatedHotelInfo;
+		return cheapestBestRatedHotel;
 	}
 
 

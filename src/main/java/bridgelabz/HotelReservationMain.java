@@ -73,11 +73,11 @@ public class HotelReservationMain {
 			
 			case 4:
 				
-				System.out.println("Enter the start date (DD-MMM-YYYY)");
+				System.out.println("Enter the start date (DDMMMYYYY)");
 				String sd = sc.next();
-				System.out.println("Enter the end date (DD-MMM-YYYY)");
+				System.out.println("Enter the end date (DDMMMYYYY)");
 				String ed = sc.next();
-				HotelReservationSystem.getCheapestBestRatedHotel(sd, ed);
+				hotelReservationSystem.getCheapestBestRatedHotel(sd, ed);
 				break;
 			}
 		}while(num!=0);
