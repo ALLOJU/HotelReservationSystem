@@ -7,77 +7,63 @@ public class Hotel {
 	 */
 	private String HotelName;
 	private int rating;
-	private double weekDayRatePerRegularCustomer;
-	private double weekDayRatePerRewardsCustomer;
-	private double weekEndRatePerRegularCustomer;
-	private double weekEndRatePerRewardsCustomer;
+	private int weekDayRate;
+	private int weekEndRate;
 	
-	public Hotel(String hotelName, int rating, double weekDayRatePerRegularCustomer,
-			double weekDayRatePerRewardsCustomer, double weekEndRatePerRegularCustomer,
-			double weekEndRatePerRewardsCustomer) {
+	
+	public Hotel(String hotelName, int rating, int weekDayRate, int weekEndRate) {
 		super();
 		HotelName = hotelName;
 		this.rating = rating;
-		this.weekDayRatePerRegularCustomer = weekDayRatePerRegularCustomer;
-		this.weekDayRatePerRewardsCustomer = weekDayRatePerRewardsCustomer;
-		this.weekEndRatePerRegularCustomer = weekEndRatePerRegularCustomer;
-		this.weekEndRatePerRewardsCustomer = weekEndRatePerRewardsCustomer;
+		this.weekDayRate = weekDayRate;
+		this.weekEndRate = weekEndRate;
 	}
+
 
 	public String getHotelName() {
 		return HotelName;
 	}
 
+
 	public void setHotelName(String hotelName) {
 		HotelName = hotelName;
 	}
+
 
 	public int getRating() {
 		return rating;
 	}
 
+
 	public void setRating(int rating) {
 		this.rating = rating;
 	}
 
-	public double getWeekDayRatePerRegularCustomer() {
-		return weekDayRatePerRegularCustomer;
+
+	public double getWeekDayRate() {
+		return weekDayRate;
 	}
 
-	public void setWeekDayRatePerRegularCustomer(double weekDayRatePerRegularCustomer) {
-		this.weekDayRatePerRegularCustomer = weekDayRatePerRegularCustomer;
+
+	public void setWeekDayRate(int weekDayRate) {
+		this.weekDayRate = weekDayRate;
 	}
 
-	public double getWeekDayRatePerRewardsCustomer() {
-		return weekDayRatePerRewardsCustomer;
+
+	public double getWeekEndRate() {
+		return weekEndRate;
 	}
 
-	public void setWeekDayRatePerRewardsCustomer(double weekDayRatePerRewardsCustomer) {
-		this.weekDayRatePerRewardsCustomer = weekDayRatePerRewardsCustomer;
+
+	public void setWeekEndRate(int weekEndRate) {
+		this.weekEndRate = weekEndRate;
 	}
 
-	public double getWeekEndRatePerRegularCustomer() {
-		return weekEndRatePerRegularCustomer;
-	}
-
-	public void setWeekEndRatePerRegularCustomer(double weekEndRatePerRegularCustomer) {
-		this.weekEndRatePerRegularCustomer = weekEndRatePerRegularCustomer;
-	}
-
-	public double getWeekEndRatePerRewardsCustomer() {
-		return weekEndRatePerRewardsCustomer;
-	}
-
-	public void setWeekEndRatePerRewardsCustomer(double weekEndRatePerRewardsCustomer) {
-		this.weekEndRatePerRewardsCustomer = weekEndRatePerRewardsCustomer;
-	}
 
 	@Override
 	public String toString() {
-		return "Hotel [HotelName=" + HotelName + ", rating=" + rating + ", weekDayRatePerRegularCustomer="
-				+ weekDayRatePerRegularCustomer + ", weekDayRatePerRewardsCustomer=" + weekDayRatePerRewardsCustomer
-				+ ", weekEndRatePerRegularCustomer=" + weekEndRatePerRegularCustomer
-				+ ", weekEndRatePerRewardsCustomer=" + weekEndRatePerRewardsCustomer + "]";
+		return "Hotel [HotelName=" + HotelName + ", rating=" + rating + ", weekDayRate=" + weekDayRate
+				+ ", weekEndRate=" + weekEndRate + "]";
 	}
 	
 	
