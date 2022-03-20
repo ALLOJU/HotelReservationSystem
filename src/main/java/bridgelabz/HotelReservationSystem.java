@@ -1,5 +1,6 @@
 package bridgelabz;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
@@ -20,7 +21,8 @@ public class HotelReservationSystem {
 	 * Creating arraylist of hotel
 	 */
 	public static ArrayList<Hotel> hotelList=new ArrayList<>();
-
+	Map<String, Integer> minRateInRegular = new HashMap<>();
+	Hotel result1;
 
 	/*
 	 * @Purpose : ArrayList of Hotel
@@ -66,16 +68,16 @@ public class HotelReservationSystem {
 			System.out.println("Enter Hotel Rating");
 			int rating = sc.nextInt();
 			System.out.println("Enter Week Day rate for Regular Customer");
-			int weekDayRate = sc.nextInt();
+			int regularWeekDayRate = sc.nextInt();
 			
 			System.out.println("Enter Week End rate for Regular Customer");
-			int weekEndRate = sc.nextInt();
+			int regularWeekEndRate = sc.nextInt();
 		
-			Hotel hotel=new Hotel(HotelName, rating,weekDayRate,weekEndRate);
+			Hotel hotel=new Hotel(HotelName,rating,regularWeekEndRate,regularWeekEndRate);
 			hotel.setHotelName(HotelName);
 			hotel.setRating(rating);
-			hotel.setWeekDayRate(weekDayRate);
-			hotel.setWeekEndRate(weekEndRate);
+			hotel.setRegularWeekDayRate(regularWeekDayRate);
+			hotel.setRegularWeekEndRate(regularWeekEndRate);
 			hotelList.add(hotel);
 		}
 
@@ -90,13 +92,58 @@ public class HotelReservationSystem {
 	public  Hotel findCheapestHotel(LocalDate  startDate, LocalDate  endDate) {
 		long daysBetween = ChronoUnit.DAYS.between(startDate, endDate);
 		int cheapRate;
-		Hotel cheapest = Collections.min(hotelList, Comparator.comparing(hotel -> hotel.getWeekDayRate()));
-		cheapRate = (int) ((daysBetween + 1) * cheapest.getWeekDayRate());
+		Hotel cheapest = Collections.min(hotelList, Comparator.comparing(hotel -> hotel.getRegularWeekDayRate()));
+		cheapRate = (int) ((daysBetween + 1) * cheapest.getRegularWeekDayRate());
 		System.out.println("Cheapest Hotel Name: " + cheapest.getHotelName() + "\nTotal Rate: " + cheapRate);
-		return cheapest;
-		
-		
+		return cheapest;	
 	}
+	/**
+	 * weekEndData is a method through which calculate the cheapest hotel for
+	 * weekends also. dateList is use to store the date in the form of list traverse
+	 * the date list using advance for loop. 
+	 * day of week is use to calculate the day at that particular date.
+	 */
+	public void weekEndData(LocalDate startDate, LocalDate lastDate) {
+		
+		
+		List<LocalDate> dateList = startDate.datesUntil(lastDate).collect(Collectors.toList());
+		dateList.add(lastDate);
+		for (LocalDate localDate : dateList) {
+			DayOfWeek dayOfWeek2 = DayOfWeek.from(localDate);
+			if (dayOfWeek2.equals(DayOfWeek.SATURDAY) || dayOfWeek2.equals(DayOfWeek.SUNDAY)) {
+				for (Hotel hotel : hotelList) {
+					hotel.totalRegularRate += hotel.getRegularWeekEndRate();
+				}
+			} else {
+				for (Hotel hotel : hotelList) {
+					hotel.totalRegularRate += hotel.getRegularWeekDayRate();
+				}
+			}
+		}
+		
+		result1 = hotelList.get(0);
+		for (Hotel hotel : hotelList) {
+			if (result1.totalRegularRate > hotel.totalRegularRate) {
+				result1 = hotel;
+				minRateInRegular.put(hotel.getHotelName(), hotel.totalRegularRate);
+			}
+		}
+		minRateInRegular.put(result1.getHotelName(), result1.totalRegularRate);
+		for (Hotel hotel : hotelList) {
+			if (hotel.totalRegularRate == result1.totalRegularRate) {
+				minRateInRegular.put(hotel.getHotelName(), hotel.totalRegularRate);
+			}
+		}
+	}
+	/**
+	 * this function is use to find the cheapest hotel.
+	 */
+	public void findCheapestRegularHotels(LocalDate startDate, LocalDate lastDate) {
+		weekEndData(startDate, lastDate);
+		System.out.println("Minimum Rate Hotels");
+		minRateInRegular.forEach((key, value) -> System.out.println("Hotel Name: " + key + "\nTotal Rate: " + value));
+	}
+	
 
 	
 
