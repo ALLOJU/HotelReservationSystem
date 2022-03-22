@@ -37,4 +37,11 @@ public class HotelReservationSystemTest {
 		Hotel cheapestHotelInfo=hotelReservationSystem.getCheapestBestRatedHotel("11Sep2020","12Sep2020");
 		Assert.assertEquals("bridgewood", cheapestHotelInfo.getHotelName().toLowerCase());
 	}
+	@Test
+	public void given3Hotels_InAGivenDateRange_ShouldReturnBestRatedHotel() {
+
+		HotelReservationSystem hotelReservationSystem = new HotelReservationSystem();
+		String bestRatedHotelInfo = hotelReservationSystem.getBestRatedHotel("11Sep2020","12Sep2020");
+		Assert.assertEquals("Ridgewood, Total Cost: $370", bestRatedHotelInfo.toLowerCase());
+	}
 }

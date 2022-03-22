@@ -29,6 +29,7 @@ public class HotelReservationMain {
 			System.out.println("Please Enter 2 to find cheapest hotel for date input range");
 			System.out.println("Please Enter 3 to find cheapest hotel for regular customer");
 			System.out.println("Please Enter 4 to find cheapes best rated hotel for regular customer");
+			System.out.println("Please Enter 5 to find best rated hotel");
 
 
 			System.out.println("Choose option to perform action");
@@ -79,6 +80,12 @@ public class HotelReservationMain {
 				String ed = sc.next();
 				hotelReservationSystem.getCheapestBestRatedHotel(sd, ed);
 				break;
+			case 5:
+				System.out.println("Enter the start date (DDMMMYYYY)");
+				String start = sc.next();
+				System.out.println("Enter the end date (DDMMMYYYY)");
+				String end = sc.next();
+				hotelReservationSystem.getBestRatedHotel(start, end);
 			}
 		}while(num!=0);
 

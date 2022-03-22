@@ -188,6 +188,25 @@ public class HotelReservationSystem {
 		return cheapestBestRatedHotel;
 	}
 
-
+	/*
+	 *  UC7
+	 *  Created a method to find the best rated hotel in given duration including weekday and weekend rate
+	 */
+	public  String getBestRatedHotel(String startDate, String endDate) {
+		DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("ddMMMyyyy");
+		LocalDate startDateInput = LocalDate.parse(startDate, dateFormat);
+		LocalDate endDateInput = LocalDate.parse(endDate, dateFormat);
+		int noOfDaysToBook = (int) ChronoUnit.DAYS.between(startDateInput, endDateInput) + 1;
+		List<DayOfWeek> daysList = new ArrayList<>();
+		daysList = Stream.iterate(startDateInput.getDayOfWeek(), day -> day.plus(1)).limit(noOfDaysToBook).collect(Collectors.toList());
+		int noOfWeekends = (int) daysList.stream().filter(day -> 
+		day.equals(DayOfWeek.SATURDAY) || day.equals(DayOfWeek.SUNDAY)).count();
+		int noOfWeekdays = daysList.size() - noOfWeekends;
+		Hotel bestRatedHotel = hotelList.stream().max((hotelOne, hotelTwo) -> hotelOne.getRating() - hotelTwo.getRating()).orElse(null);
+		int bestRatedCost = bestRatedHotel.getRegularWeekDayRate() * noOfWeekdays + bestRatedHotel.getRegularWeekEndRate() * noOfWeekends;
+		String bestRatedHotelInfo = bestRatedHotel.getHotelName() + ", Total Cost: $" + bestRatedCost;
+		System.out.println(bestRatedHotelInfo);
+		return bestRatedHotelInfo;
+	}
 
 }
