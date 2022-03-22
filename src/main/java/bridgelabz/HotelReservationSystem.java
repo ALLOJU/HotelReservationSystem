@@ -73,8 +73,14 @@ public class HotelReservationSystem {
 
 			System.out.println("Enter Week End rate for Regular Customer");
 			int regularWeekEndRate = sc.nextInt();
+			
+			System.out.println("Enter Week Day rate for Rewards Customer");
+			int rewardsWeekDayRate = sc.nextInt();
 
-			Hotel hotel=new Hotel(HotelName,rating,regularWeekEndRate,regularWeekEndRate);
+			System.out.println("Enter Week End rate for Rewards Customer");
+			int rewardsWeekEndRate = sc.nextInt();
+
+			Hotel hotel=new Hotel(HotelName,rating,regularWeekEndRate,regularWeekEndRate,rewardsWeekDayRate,rewardsWeekEndRate);
 			hotel.setHotelName(HotelName);
 			hotel.setRating(rating);
 			hotel.setRegularWeekDayRate(regularWeekDayRate);
@@ -157,7 +163,12 @@ public class HotelReservationSystem {
 		minRateInRegular.forEach((key, value) -> System.out.println("Hotel Name: " + key + "\nTotal Rate: " + value));
 	}
 
-
+	/**
+	 * this method used to find cheapest best rated hotel
+	 * @param startDate - starting input data
+	 * @param endDate - - end input data
+	 * @return
+	 */
 	public  Hotel getCheapestBestRatedHotel(String startDate, String endDate) {
 		DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("ddMMMyyyy");
 		LocalDate startDateInput = LocalDate.parse(startDate, dateFormat);
@@ -208,5 +219,6 @@ public class HotelReservationSystem {
 		System.out.println(bestRatedHotelInfo);
 		return bestRatedHotelInfo;
 	}
+	
 
 }
