@@ -3,6 +3,7 @@ package bridgelabz;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -24,7 +25,9 @@ public class HotelReservationSystem {
 	public static ArrayList<Hotel> hotelList=new ArrayList<>();
 	Map<String, Integer> minRateInRegular = new HashMap<>();
 	Hotel result1;
-
+	public enum CustomerType {
+		REGULAR, REWARDS
+	}
 	/*
 	 * @Purpose : ArrayList of Hotel
 	 * 
@@ -73,7 +76,7 @@ public class HotelReservationSystem {
 
 			System.out.println("Enter Week End rate for Regular Customer");
 			int regularWeekEndRate = sc.nextInt();
-			
+
 			System.out.println("Enter Week Day rate for Rewards Customer");
 			int rewardsWeekDayRate = sc.nextInt();
 
@@ -169,7 +172,7 @@ public class HotelReservationSystem {
 	 * @param endDate - - end input data
 	 * @return
 	 */
-	public  Hotel getCheapestBestRatedHotel(String startDate, String endDate) {
+	public  String getCheapestBestRatedHotel(String startDate, String endDate) {
 		DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("ddMMMyyyy");
 		LocalDate startDateInput = LocalDate.parse(startDate, dateFormat);
 		LocalDate endDateInput = LocalDate.parse(endDate, dateFormat);
@@ -196,7 +199,7 @@ public class HotelReservationSystem {
 		Hotel cheapestBestRatedHotel = cheapestHotelList.stream().max((hotelOne, hotelTwo) -> hotelOne.getRating() -hotelTwo.getRating()).orElse(null);
 		String cheapestBestRatedHotelInfo = cheapestBestRatedHotel.getHotelName() + ", Rating: " + cheapestBestRatedHotel.getRating() + ", Total Cost: $" + minCost;
 		System.out.println("Cheapest Best Rated Hotel :- " + cheapestBestRatedHotelInfo);
-		return cheapestBestRatedHotel;
+		return cheapestBestRatedHotel.getHotelName();
 	}
 
 	/*
@@ -219,6 +222,60 @@ public class HotelReservationSystem {
 		System.out.println(bestRatedHotelInfo);
 		return bestRatedHotelInfo;
 	}
-	
+	/**
+	 * UC10
+	 * Method to find find the cheapest best rated hotel Hotel for a given Date Range for a Reward Customer
+	 */
+	public String getCheapestBestRatedHotelForRewards (String startDate, String endDate) {
+		String cheapestBestRatedHotelForRewardsInfo = null;
+		try {
+			DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("ddMMMyyyy");
+			LocalDate startDateInput = LocalDate.parse(startDate, dateFormat);
+			LocalDate endDateInput = LocalDate.parse(endDate, dateFormat);
+			int noOfDaysToBook = (int) ChronoUnit.DAYS.between(startDateInput, endDateInput) + 1;
+			List<DayOfWeek> daysList = new ArrayList<>();
+			daysList = Stream.iterate(startDateInput.getDayOfWeek(), day -> day.plus(1)).limit(noOfDaysToBook).collect(Collectors.toList());
+			int noOfWeekends = (int) daysList.stream().filter(day -> 
+			day.equals(DayOfWeek.SATURDAY) || day.equals(DayOfWeek.SUNDAY)).count();
+			int noOfWeekdays = daysList.size() - noOfWeekends;
+			int minCost = hotelList.get(0).getRewardsWeekDayRate()  * noOfWeekdays + hotelList.get(0).getRewardsWeekEndRate() * noOfWeekends ;
+			List<Hotel> cheapestHotelList = new ArrayList<>();
+			cheapestHotelList.add(hotelList.get(0));
+			//for and if used because we can have multiple hotels offering the same lowest total price until uc4
+			for(int i = 1; i < hotelList.size(); i++) {
+				if(hotelList.get(i).getRewardsWeekDayRate() * noOfWeekdays + hotelList.get(i).getRewardsWeekEndRate() * noOfWeekends < minCost) {
+					minCost = hotelList.get(i).getRewardsWeekDayRate() * noOfWeekdays + hotelList.get(i).getRewardsWeekEndRate()* noOfWeekends;
+					for(int j = 0; j < cheapestHotelList.size(); j++) 
+						cheapestHotelList.remove(j);
+					cheapestHotelList.add(hotelList.get(i));
+				}
+				if(hotelList.get(i).getRewardsWeekDayRate() * noOfWeekdays + hotelList.get(i).getRewardsWeekEndRate() * noOfWeekends == minCost)
+					cheapestHotelList.add(hotelList.get(i));
+			}
+			Hotel cheapestBestRatedHotelForRewards = cheapestHotelList.stream().max((hotelOne, hotelTwo) -> hotelOne.getRating() - hotelTwo.getRating()).orElse(null);
+			cheapestBestRatedHotelForRewardsInfo = cheapestBestRatedHotelForRewards.getHotelName() + ", Rating: " + cheapestBestRatedHotelForRewards.getRating() + ", Total Cost: $" + minCost;
+			System.out.println(cheapestBestRatedHotelForRewardsInfo);
+		} catch (DateTimeParseException e) {
+			e.printStackTrace();
+			System.out.println("The format of dates(s) entered is incorrect!");
+		}
+		return cheapestBestRatedHotelForRewardsInfo;
+	}
+	private Object typeOfCustomer;
+	public void typeOfCustomer(String typeOfCustomer) throws CustomerTypeException {
+		if(CustomerType.REGULAR.name().equals(typeOfCustomer))
+			this.typeOfCustomer = CustomerType.REGULAR;
+		else if(CustomerType.REWARDS.name().equals(typeOfCustomer))
+			this.typeOfCustomer = CustomerType.REWARDS;
+		else throw new CustomerTypeException("Please enter only REGULAR or REWARDS!");
+	}
+
+	public String cheapestBestRatedHotelSelector(String startDate, String endDate) {
+		if(typeOfCustomer == CustomerType.REGULAR)
+			return getCheapestBestRatedHotel(startDate, endDate);
+		else
+			return getCheapestBestRatedHotelForRewards(startDate, endDate);
+	}
+
 
 }
